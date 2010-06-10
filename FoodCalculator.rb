@@ -9,7 +9,7 @@ class FoodCalculator
 	end
 	
 	def readConfiguration(path)
-		pattern = /(.+) (\d+|\d+\.\d+) kJ(/(\d+|\d+\.\d+)(g|kg))?/
+		pattern = /(.+) (\d+|\d+\.\d+) kJ(\/(\d+|\d+\.\d+)(g|kg))?/
 		lines = Nil.readLines(path)
 		if lines == nil
 			raise "Unable to open configuration file  #{path}"
@@ -23,13 +23,13 @@ class FoodCalculator
 			end
 			name = match[1]
 			energy = match[2].to_f
-			amount = match[4].to_f
+			amount = match[4]
 			unit = match[5]
 			if amount == nil
 				definitionAmount = nil
 			else
-				definitionAmount = [amount, unit]
-			else
+				definitionAmount = [amount.to_f, unit]
+			end
 			definition = FoodDefinition.new(name, energy, definitionAmount)
 			@definitions << definition
 			counter += 1
@@ -56,10 +56,12 @@ class FoodCalculator
 			unit = match[3]
 			name = match[4]
 			
-			definition = @definitions.index(name)
-			if definition == nil
-				raise "Unable to find a food definition for food \"#{definition.name}\" on line #{counter}"
+			index = @definitions.index(name)
+			if index == nil
+				raise "Unable to find a food definition for food \"#{name}\" on line #{counter}"
 			end
+			
+			definition = @definitions[index]
 			
 			isNonMassAmount = unit == nil
 			definitionIsNonMassAmount = definition.amount == nil
@@ -69,13 +71,17 @@ class FoodCalculator
 			
 			energy = amount * definition.energy
 			if !isNonMassAmount
-				energy *= amount FoodDefinition::MassUnits[unit]
+				amount /= 1000.0
+				energy *= FoodDefinition::MassUnits[unit] / definition.amount
 			end
+			energy /= 1000.0
+			puts "Energy for #{line}: #{energy} kJ"
 			totalEnergy += energy
 			
 			counter += 1
 		end
 		
+		totalEnergy = totalEnergy
 		return totalEnergy
 	end
 end

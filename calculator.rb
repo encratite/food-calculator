@@ -6,7 +6,7 @@ if ARGV.size != 1
 	exit
 end
 
-path = ARGV[1]
+path = ARGV[0]
 begin
 	calculator = FoodCalculator.new('food-definitions')
 	energy = calculator.processConsumptionFile(path)

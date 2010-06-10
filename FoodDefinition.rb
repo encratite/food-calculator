@@ -22,6 +22,9 @@ class FoodDefinition
 			#internally everything is stored as kg
 			mass, unit = amount
 			unitFactor = MassUnits[unit]
+			if unitFactor == nil
+				raise "Invalid unit: #{unit.inspect}"
+			end
 			@amount = mass * unitFactor
 		end
 	end
