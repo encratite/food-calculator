@@ -1,6 +1,7 @@
 require 'nil/file'
 
 require 'FoodDefinition'
+require 'EnergyEntry'
 
 class FoodCalculator
 	def initialize(configurationPath)
@@ -45,6 +46,9 @@ class FoodCalculator
 		if lines == nil
 			raise "Unable to open consumption file  #{path}"
 		end
+		
+		entries = []
+		
 		counter = 1
 		lines.each do |line|
 			next if line.empty?
@@ -71,14 +75,23 @@ class FoodCalculator
 			
 			energy = amount * definition.energy
 			if !isNonMassAmount
-				amount /= 1000.0
+				#amount /= 1000.0
 				energy *= FoodDefinition::MassUnits[unit] / definition.amount
 			end
 			energy /= 1000.0
-			puts "Energy for #{line}: #{energy} kJ"
+			#puts "Energy for #{line}: #{energy} kJ"
+			
+			entries << EnergyEntry.new(line, energy)
+			
 			totalEnergy += energy
 			
 			counter += 1
+		end
+		
+		padding = entries.map{|x| x.description.size}.max + 5
+		
+		entries.sort.each do |entry|
+			printf("#{entry.description}: %#{padding - entry.description.size}d kJ\n", entry.energy)
 		end
 		
 		totalEnergy = totalEnergy

@@ -10,7 +10,7 @@ path = ARGV[0]
 begin
 	calculator = FoodCalculator.new('food-definitions')
 	energy = calculator.processConsumptionFile(path)
-	puts "#{energy.to_i} kJ"
+	puts "Total: #{energy.to_i} kJ"
 rescue RuntimeError => error
 	puts "Error: #{error.message}"
 end
