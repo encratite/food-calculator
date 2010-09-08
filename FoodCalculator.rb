@@ -1,7 +1,7 @@
 require 'nil/file'
 
-require 'FoodDefinition'
-require 'EnergyEntry'
+require_relative 'FoodDefinition'
+require_relative 'EnergyEntry'
 
 class FoodCalculator
 	def initialize(configurationPath)

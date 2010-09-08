@@ -1,4 +1,4 @@
-require 'FoodCalculator'
+require_relative 'FoodCalculator'
 
 if ARGV.size != 1
 	puts 'Usage:'
